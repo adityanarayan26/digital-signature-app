@@ -15,6 +15,7 @@ export default function Dashboard() {
     const [file, setFile] = useState<File | null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const navigate = useNavigate();
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
     const token = localStorage.getItem('token');
 
@@ -28,7 +29,7 @@ export default function Dashboard() {
 
     const fetchDocuments = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/docs', {
+            const res = await axios.get(`${API_URL}/api/docs`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setDocuments(res.data);
@@ -50,7 +51,7 @@ export default function Dashboard() {
         formData.append('title', file.name);
 
         try {
-            await axios.post('http://localhost:5000/api/docs/upload', formData, {
+            await axios.post(`${API_URL}/api/docs/upload`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',
@@ -136,7 +137,7 @@ export default function Dashboard() {
                                 </div>
                                 <div className="mt-5 flex items-center justify-between">
                                     <a
-                                        href={`http://localhost:5000${doc.fileUrl}`}
+                                        href={`${API_URL}${doc.fileUrl}`}
                                         target="_blank"
                                         rel="noreferrer"
                                         className="text-sm font-medium text-blue-600 hover:text-blue-800"

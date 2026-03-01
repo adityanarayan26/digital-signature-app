@@ -18,6 +18,7 @@ export default function Sign() {
     const [pageNumber, setPageNumber] = useState(1);
     const [isSigning, setIsSigning] = useState(false);
     const [finalDocUrl, setFinalDocUrl] = useState<string | null>(null);
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
     useEffect(() => {
         fetchSignature();
@@ -25,9 +26,9 @@ export default function Sign() {
 
     const fetchSignature = async () => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/signatures/public/${token}`);
+            const res = await axios.get(`${API_URL}/api/signatures/public/${token}`);
             setSignature(res.data);
-            setDocUrl(`http://localhost:5000${res.data.documentId.fileUrl}`);
+            setDocUrl(`${API_URL}${res.data.documentId.fileUrl}`);
         } catch (err) {
             console.error(err);
             alert('Invalid or expired signature link');
@@ -37,8 +38,8 @@ export default function Sign() {
     const handleSign = async () => {
         try {
             setIsSigning(true);
-            const res = await axios.post(`http://localhost:5000/api/signatures/finalize/${token}`);
-            setFinalDocUrl(`http://localhost:5000${res.data.fileUrl}`);
+            const res = await axios.post(`${API_URL}/api/signatures/finalize/${token}`);
+            setFinalDocUrl(`${API_URL}${res.data.fileUrl}`);
             alert('Document signed successfully!');
         } catch (err: any) {
             console.error(err);

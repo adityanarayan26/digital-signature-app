@@ -21,7 +21,7 @@ export default function Editor() {
 
     // Simple drag state
     const [dragPos, setDragPos] = useState({ x: 50, y: 50 });
-    const [isDragging, setIsDragging] = useState(false);
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
     const token = localStorage.getItem('token');
 
@@ -33,10 +33,10 @@ export default function Editor() {
 
     const fetchDoc = async () => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/docs/${id}`, {
+            const res = await axios.get(`${API_URL}/api/docs/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setDocUrl(`http://localhost:5000${res.data.fileUrl}`);
+            setDocUrl(`${API_URL}${res.data.fileUrl}`);
         } catch (err) {
             console.error(err);
             navigate('/dashboard');
@@ -45,7 +45,7 @@ export default function Editor() {
 
     const fetchSignatures = async () => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/signatures/${id}`, {
+            const res = await axios.get(`${API_URL}/api/signatures/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setSignatures(res.data);
@@ -59,13 +59,11 @@ export default function Editor() {
     }
 
     const handleDragStart = (e: React.DragEvent) => {
-        setIsDragging(true);
         e.dataTransfer.setData('text/plain', 'signature');
     };
 
     const handleDrop = (e: React.DragEvent) => {
         e.preventDefault();
-        setIsDragging(false);
 
         // Calculate position
         const rect = e.currentTarget.getBoundingClientRect();
@@ -85,7 +83,7 @@ export default function Editor() {
         if (!signerEmail || !signerName) return;
 
         try {
-            await axios.post('http://localhost:5000/api/signatures', {
+            await axios.post(`${API_URL}/api/signatures`, {
                 documentId: id,
                 signerName,
                 signerEmail,

@@ -11,12 +11,13 @@ export default function Login() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
         try {
             if (isRegistering) {
-                await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+                await axios.post(`${API_URL}/api/auth/register`, { name, email, password });
                 setIsRegistering(false);
             } else {
-                const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+                const res = await axios.post(`${API_URL}/api/auth/login`, { email, password });
                 localStorage.setItem('token', res.data.token);
                 navigate('/dashboard');
             }
